@@ -1,0 +1,51 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: django-app
+  labels:
+    app: django
+    owner: malykh
+spec:
+  selector:
+    matchLabels:
+      project: dvmn-k8s
+  template:
+    metadata:
+      labels:
+        project: dvmn-k8s
+    spec:
+      containers:
+      - name: db
+        image: postgres:12.0-alpine
+        ports:
+          - containerPort: 5432
+        envFrom:
+          - secretRef:
+              name: dvmn-django-secrets
+
+      - name: web
+        image: django_app:for_k8s
+        ports:
+          - containerPort: 80
+        envFrom:
+          - secretRef:
+              name: dvmn-django-secrets
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: django-app-service
+  labels:
+    app: django
+    owner: malykh
+spec:
+  type: NodePort
+  selector:
+    project: dvmn-k8s
+  ports:
+    - name: django-app-listener
+      protocol: TCP
+      port: 80
+      targetPort: 80
