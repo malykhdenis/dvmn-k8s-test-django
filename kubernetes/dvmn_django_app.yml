@@ -30,22 +30,3 @@ spec:
         envFrom:
           - secretRef:
               name: dvmn-django-secrets
-
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: django-app-service
-  labels:
-    app: django
-    owner: malykh
-spec:
-  type: NodePort
-  selector:
-    project: dvmn-k8s
-  ports:
-    - name: django-app-listener
-      protocol: TCP
-      port: 80
-      targetPort: 80
