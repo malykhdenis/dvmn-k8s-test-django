@@ -3,3 +3,4 @@ __pycache__/
 *.py[cod]
 *$py.class
 dvmn_django_app_secrets.yml
+dvmn_django_app_clearsessions_secrets.yml

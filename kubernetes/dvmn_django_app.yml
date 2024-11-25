@@ -30,3 +30,4 @@ spec:
         envFrom:
           - secretRef:
               name: dvmn-django-secrets
+              

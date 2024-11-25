@@ -89,3 +89,10 @@ cd kubernetes
 ```shell
 kubectl apply -f dvmn_django_app_secrets.yml
 ```
+
+## Запуск регулярной очистки сессий
+
+Создать CronJob командой
+```
+kubectl create -f kubernetes/dvmn-django-clearsessions-cronjob.yml
+```
