@@ -76,6 +76,31 @@ $ docker compose build web
 
 `DATABASE_URL` -- адрес для подключения к базе данных PostgreSQL. Другие СУБД сайт не поддерживает. [Формат записи](https://github.com/jacobian/dj-database-url#url-schema).
 
+## Установка базы через Helm
+
+Установка Helm
+```
+brew install helm
+```
+
+Cоздание пода с базой данных
+```
+helm install my-release oci://registry-1.docker.io/bitnamicharts/postgresql
+```
+
+Вход в под
+```
+kubectl exec -it my-release-postgresql-0 -- /opt/bitnami/scripts/postgresql/entrypoint.sh /bin/bash
+```
+
+Создать БД
+```
+psql
+create database <db_name>;
+create user <username> with encrypted password <password>;
+grant all privileges on database <db_name> to <username>;
+```
+
 ## Создание Secret в кластере
 
 В директории `kubernetes/` создать файл `dvmn_django_app_secrets.yml`, и заполнить его по примеру `dvmn_django_app_secrets_example.yml`. Каждое значение ключа должно быть закодировано в `base64`.
@@ -90,9 +115,29 @@ cd kubernetes
 kubectl apply -f dvmn_django_app_secrets.yml
 ```
 
-## Запуск регулярной очистки сессий
+## Развертывание в minikube
 
-Создать CronJob командой
+Запуск deployment для создания контейнеров с приложением
 ```
-kubectl create -f kubernetes/dvmn-django-clearsessions-cronjob.yml
+kubectl apply -f /kubernetes/dvmn_django_app.yml
+```
+
+Запуск ingress для открытия портов
+```
+kubectl apply -f /kubernetes/dvmn-ingress.yml
+```
+
+Запуск job для выполнения миграций
+```
+kubectl apply -f /kubernetes/dvmn-django-migrate.yml
+```
+
+Запуск cronjob для регулярной очистки сессий
+```
+kubectl apply -f /kubernetes/dvmn-django-clearsessions-cronjob.yml
+```
+
+Открыть проект в браузере
+```
+minikube service django-app
 ```
