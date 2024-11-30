@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: migrate
+spec:
+  template:
+    spec:
+      containers:
+        - name: migrate
+          image: django_app:for_k8s
+          imagePullPolicy: IfNotPresent
+          command: [ "python", "manage.py", "migrate", "--noinput" ]
+          envFrom:
+            - secretRef:
+                name: dvmn-django-clearsessions-secrets
+      restartPolicy: OnFailure
+  backoffLimit: 3

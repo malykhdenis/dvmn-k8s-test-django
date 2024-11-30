@@ -9,12 +9,13 @@ spec:
   containers:
   - name: clearsessions
     image: django_app:for_k8s
-    command: ['sh', '-c','python manage.py clearsessions']
+    command: ["/bin/bash"]
+    args: ["-c", "python manage.py clearsessions"]
     env:
       - name: SECRET_KEY
         value: 'default'
       - name: DEBUG
         value: 'true'
       - name: DATABASE_URL
-        value: 'postgres://admin:123@10.244.0.137:5432/db'
+        value: 'postgres://admin:123@10.244.27.52:5432/db'
   restartPolicy: OnFailure
