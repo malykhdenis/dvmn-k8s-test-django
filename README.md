@@ -141,3 +141,10 @@ kubectl apply -f /kubernetes/dvmn-django-clearsessions-cronjob.yml
 ```
 minikube service django-app
 ```
+
+## Как задеплоить код
+
+Деплой nginx после подключнеия к кластеру на Yandex Cloud:
+```
+kubectl apply -f yc-sirius/edu-silly-lamarr/nginx.yaml
+```
