@@ -193,3 +193,15 @@ psql "host=rc1b-qitwkw0k********.rw.mdb.yandexcloud.net \
   user=<имя_пользователя> \
   target_session_attrs=read-write"
 ```
+
+## Сборка и публикация докер-образов
+
+Cборка образа
+```
+docker build --file Dockerfile --tag <docker_hub_username>/django_app:<tag> ./backend_main_django
+```
+
+Публикация образа
+```
+docker push <docker_hub_username>/django_app:<tag>
+```
