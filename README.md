@@ -148,3 +148,48 @@ minikube service django-app
 ```
 kubectl apply -f yc-sirius/edu-silly-lamarr/nginx.yaml
 ```
+
+## Как подготовить dev окружение
+
+Получить SSL ключ ([Инструкция Yandex Cloud](https://yandex.cloud/ru/docs/managed-postgresql/operations/connect)) и закодировать в base64.
+
+Далее полученный результат запишите в секрет
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: pg-root-cert
+data:
+  root.crt: <SSL в base64>
+```
+
+Секрет в pode или deploy файле:
+```yaml
+...
+spec:
+  volumes:
+    - name: secret-volume
+      secret:
+        secretName: pg-root-cert
+  containers:
+    - image: ...
+      volumeMounts:
+        - name: secret-volume
+          readOnly: true
+          mountPath: "/root/.postgresql"
+```
+В папке /root/.postgresql файл с SSL сертификатами (название файла будет `root.crt`).
+3. Запуск и подключение к POD. 
+```shell
+kubectl apply -f <манифест poda>
+kubectl exec -it <имя poda> -- /bin/bash
+```
+4. Подключитесь к базе данных.
+```shell
+psql "host=rc1b-qitwkw0k********.rw.mdb.yandexcloud.net \
+  port=6432 \
+  sslmode=verify-full \
+  dbname=<имя_БД> \
+  user=<имя_пользователя> \
+  target_session_attrs=read-write"
+```
