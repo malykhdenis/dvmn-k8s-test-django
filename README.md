@@ -142,6 +142,10 @@ kubectl apply -f /kubernetes/dvmn-django-clearsessions-cronjob.yml
 minikube service django-app
 ```
 
+## Ссылка на список выделенных ресурсов облачной инфраструктуры
+
+https://sirius-env-registry.website.yandexcloud.net/edu-silly-lamarr.html
+
 ## Как задеплоить код
 
 Деплой nginx после подключнеия к кластеру на Yandex Cloud:
@@ -223,18 +227,19 @@ kubectl apply -f yc-sirius/edu-silly-lamarr/django_secret.yaml
 kubectl apply -f yc-sirius/edu-silly-lamarr/deployment.yaml
 ```
 
-4. Запустить Pod для выполнения миграций
+4. Запустить Service для доступа к приложению по адресу домена https://edu-silly-lamarr.sirius-k8s.dvmn.org
+```
+kubectl apply -f yc-sirius/edu-silly-lamarr/service.yaml
+```
+
+
+5. Запустить Pod для выполнения миграций
 ```
 kubectl apply -f yc-sirius/edu-silly-lamarr/migrate.yaml
 ```
 
-5. Зайти в запущенный Pod и создать суперюзера для входа в admin
+6. Зайти в запущенный Pod и создать суперюзера для входа в admin
 ```
 kubectl exec -it <pod's name> -- bash
 ./manage.py createsuperuser
-```
-
-6.Открыть порт для доступа к admin по адресу 127.0.0.1:8000
-```
-kubectl port-forward pod/<pod's name> 8000:80
 ```
