@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-app
+  labels: django-app
+spec:
+  selector:
+    matchLabels:
+      app: django-app
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: django-app
+    spec:
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: pg-root-cert
+      containers:
+          - name: django-app-web
+            image: malykh/dvmn-k8s@sha256:3091573ec669e881aa7c0b778d6eb01b35cc201f88ac7a5fb64034684c355ac1
+            ports:
+              - containerPort: 80
+                name: http-web-svc
+            volumeMounts:
+              - name: secret-volume
+                readOnly: true
+                mountPath: "/root/.postgresql"
+            envFrom:
+              - secretRef:
+                  name: django-secrets

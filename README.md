@@ -205,3 +205,36 @@ docker build --file Dockerfile --tag <docker_hub_username>/django_app:<tag> ./ba
 ```
 docker push <docker_hub_username>/django_app:<tag>
 ```
+
+## Деплой на prod
+
+1. Создать Secret с SSL сертификатами для подключения к PostgreSQL в Yandex Cloud
+```
+kubectl apply -f yc-sirius/edu-silly-lamarr/ssl_secret.yaml
+```
+
+2. Создать Secret для Django
+```
+kubectl apply -f yc-sirius/edu-silly-lamarr/django_secret.yaml
+```
+
+3. Создать Deployment
+```
+kubectl apply -f yc-sirius/edu-silly-lamarr/deployment.yaml
+```
+
+4. Запустить Pod для выполнения миграций
+```
+kubectl apply -f yc-sirius/edu-silly-lamarr/migrate.yaml
+```
+
+5. Зайти в запущенный Pod и создать суперюзера для входа в admin
+```
+kubectl exec -it <pod's name> -- bash
+./manage.py createsuperuser
+```
+
+6.Открыть порт для доступа к admin по адресу 127.0.0.1:8000
+```
+kubectl port-forward pod/<pod's name> 8000:80
+```
